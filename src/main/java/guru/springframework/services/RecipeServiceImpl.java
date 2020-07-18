@@ -23,11 +23,9 @@ public class RecipeServiceImpl implements RecipeService {
     private final RecipeCommandToRecipe recipeCommandToRecipe;
     private final RecipeToRecipeCommand recipeToRecipeCommand;
 
-
     @Override
     public Flux<Recipe> getRecipes() {
         log.debug("I'm in the service");
-
         return recipeRepository.findAll();
 
     }
@@ -39,7 +37,6 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public Mono<RecipeCommand> findCommandById(String id) {
-
         return this.findById(id)
                 .map(recipeToRecipeCommand::convert);
 

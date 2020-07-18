@@ -85,11 +85,11 @@ public class RecipeServiceImplTest {
     @Test
     public void getRecipesTest() {
 
-        when(recipeService.getRecipes()).thenReturn(Flux.just(Recipe.builder().id("1").build()));
+        when(recipeService.getRecipes()).thenReturn(Flux.just(Recipe.builder().id("1").build(), Recipe.builder().id("2").build()));
 
         Long count = recipeService.getRecipes().count().block();
 
-        assertEquals(Long.valueOf(1L), count);
+        assertEquals(Long.valueOf(2L), count);
         verify(recipeRepository, times(1)).findAll();
         verify(recipeRepository, never()).findById(anyString());
     }

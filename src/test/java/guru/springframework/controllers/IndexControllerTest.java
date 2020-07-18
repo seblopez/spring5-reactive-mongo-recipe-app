@@ -54,9 +54,8 @@ public class IndexControllerTest {
 
     @Test
     public void getIndexPage() {
-
         //given
-        when(recipeService.getRecipes()).thenReturn(Flux.just(Recipe.builder().build(), Recipe.builder().id("1").build()));
+        when(recipeService.getRecipes()).thenReturn(Flux.just(Recipe.builder().id("1").build(), Recipe.builder().id("2").build()));
 
         ArgumentCaptor<List<Recipe>> argumentCaptor = ArgumentCaptor.forClass(List.class);
 
@@ -68,8 +67,8 @@ public class IndexControllerTest {
         assertEquals("index", viewName);
         verify(recipeService, times(1)).getRecipes();
         verify(model, times(1)).addAttribute(eq("recipes"), argumentCaptor.capture());
-        List<Recipe> setInController = argumentCaptor.getValue();
-        assertEquals(2, setInController.size());
+        List<Recipe> foundRecipes = argumentCaptor.getValue();
+        assertEquals(2, foundRecipes.size());
     }
 
 }
