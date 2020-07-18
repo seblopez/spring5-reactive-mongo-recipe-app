@@ -26,8 +26,11 @@ public class IngredientCommandToIngredient implements Converter<IngredientComman
             return null;
         }
 
-        final Ingredient ingredient = new Ingredient();
-        ingredient.setId(source.getId());
+        final Ingredient ingredient = Ingredient.builder().build();
+
+        if(source.getId() != null && !source.getId().equalsIgnoreCase("")) {
+            ingredient.setId(source.getId());
+        }
 
         if(source.getRecipeId() != null){
             Recipe recipe = new Recipe();
