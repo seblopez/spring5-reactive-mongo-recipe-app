@@ -1,9 +1,7 @@
 package guru.springframework.commands;
 
 import guru.springframework.domain.Difficulty;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.Max;
@@ -19,6 +17,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class RecipeCommand {
     private String id;
 
@@ -45,9 +45,11 @@ public class RecipeCommand {
     @NotBlank
     private String directions;
 
+    @Builder.Default
     private List<IngredientCommand> ingredients = new ArrayList<>();
     private Byte[] image;
     private Difficulty difficulty;
     private NotesCommand notes;
+    @Builder.Default
     private List<CategoryCommand> categories = new ArrayList<>();
 }

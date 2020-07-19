@@ -37,10 +37,9 @@ public class ImageServiceImplTest {
                 "Spring Framework Guru".getBytes());
 
         when(recipeRepository.findById(anyString())).thenReturn(Mono.just(Recipe.builder().id(id).build()));
+        when(recipeRepository.save(any(Recipe.class))).thenReturn(Mono.empty());
 
         ArgumentCaptor<Recipe> argumentCaptor = ArgumentCaptor.forClass(Recipe.class);
-
-        when(recipeRepository.save(any(Recipe.class))).thenReturn(Mono.just(Recipe.builder().id(id).build()));
 
         //when
         imageService.saveImageFile(id, multipartFile);

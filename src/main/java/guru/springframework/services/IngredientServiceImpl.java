@@ -5,6 +5,7 @@ import guru.springframework.converters.IngredientCommandToIngredient;
 import guru.springframework.converters.IngredientToIngredientCommand;
 import guru.springframework.domain.Ingredient;
 import guru.springframework.domain.Recipe;
+import guru.springframework.exceptions.NotFoundException;
 import guru.springframework.repositories.RecipeRepository;
 import guru.springframework.repositories.reactive.RecipeReactiveRepository;
 import guru.springframework.repositories.reactive.UnitOfMeasureReactiveRepository;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.text.MessageFormat;
 import java.util.Optional;
 
 /**
@@ -35,6 +37,7 @@ public class IngredientServiceImpl implements IngredientService {
                 .findById(recipeId)
                 .flatMapIterable(Recipe::getIngredients)
                 .filter(ingredient -> ingredient.getId().equalsIgnoreCase(ingredientId))
+                .switchIfEmpty(s -> { s.onError(new NotFoundException(MessageFormat.format("Ingredient id {0} not found", ingredientId)));})
                 .single()
                 .map(ingredient -> {
                     IngredientCommand ingredientCmd = ingredientToIngredientCommand
