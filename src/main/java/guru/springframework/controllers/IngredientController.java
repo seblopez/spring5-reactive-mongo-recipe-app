@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import reactor.core.publisher.Mono;
+
+import javax.validation.Valid;
+import java.text.MessageFormat;
 
 /**
  * Created by jt on 6/28/17.
@@ -24,6 +28,7 @@ public class IngredientController {
     private final IngredientService ingredientService;
     private final RecipeService recipeService;
     private final UnitOfMeasureService unitOfMeasureService;
+    private final String RECIPE_INGREDIENT_FORM = "recipe/ingredient/ingredientform";
 
     public IngredientController(IngredientService ingredientService, RecipeService recipeService, UnitOfMeasureService unitOfMeasureService) {
         this.ingredientService = ingredientService;
@@ -65,7 +70,7 @@ public class IngredientController {
 
         model.addAttribute("uomList",  unitOfMeasureService.listAllUoms());
 
-        return "recipe/ingredient/ingredientform";
+        return RECIPE_INGREDIENT_FORM;
     }
 
     @GetMapping("recipe/{recipeId}/ingredient/{id}/update")
@@ -74,16 +79,22 @@ public class IngredientController {
         model.addAttribute("ingredient", ingredientService.findByRecipeIdAndIngredientId(recipeId, id));
 
         model.addAttribute("uomList", unitOfMeasureService.listAllUoms());
-        return "recipe/ingredient/ingredientform";
+        return RECIPE_INGREDIENT_FORM;
     }
 
     @PostMapping("recipe/{recipeId}/ingredient")
-    public String saveOrUpdate(@ModelAttribute IngredientCommand command){
-        IngredientCommand savedCommand = ingredientService.saveIngredientCommand(command).block();
+    public Mono<String> saveOrUpdate(@Valid @ModelAttribute("ingredient") Mono<IngredientCommand> ingredientCommandMono) {
+        return ingredientCommandMono.flatMap(ingredientCommand ->
+                ingredientService.saveIngredientCommand(ingredientCommand)
+                        .flatMap(savedIngredientCommand -> {
+                            log.debug(MessageFormat.format("Saved ingredient id: {0}", savedIngredientCommand.getId()));
+                            return Mono.just(MessageFormat.format("redirect:/recipe/{0}/ingredient/{1}/show", savedIngredientCommand.getRecipeId(), savedIngredientCommand.getId()));
+                        })
+        ).onErrorResume(ex -> {
+            log.error(ex.getMessage());
+            return Mono.just(RECIPE_INGREDIENT_FORM);
+        });
 
-        log.debug("saved ingredient id:" + savedCommand.getId());
-
-        return "redirect:/recipe/" + savedCommand.getRecipeId() + "/ingredient/" + savedCommand.getId() + "/show";
     }
 
     @GetMapping("recipe/{recipeId}/ingredient/{id}/delete")

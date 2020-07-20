@@ -22,6 +22,7 @@ public class RecipeServiceImpl implements RecipeService {
     private final RecipeReactiveRepository recipeRepository;
     private final RecipeCommandToRecipe recipeCommandToRecipe;
     private final RecipeToRecipeCommand recipeToRecipeCommand;
+    private final UnitOfMeasureService unitOfMeasureService;
 
     @Override
     public Flux<Recipe> getRecipes() {

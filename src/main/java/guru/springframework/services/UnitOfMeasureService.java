@@ -2,6 +2,7 @@ package guru.springframework.services;
 
 import guru.springframework.commands.UnitOfMeasureCommand;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * Created by jt on 6/28/17.
@@ -9,4 +10,6 @@ import reactor.core.publisher.Flux;
 public interface UnitOfMeasureService {
 
     Flux<UnitOfMeasureCommand> listAllUoms();
+
+    Mono<UnitOfMeasureCommand> findById(String id);
 }

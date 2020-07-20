@@ -40,6 +40,7 @@ public class ImageControllerTest {
                 .build();
     }
 
+    @Ignore
     @Test
     public void getImageForm() throws Exception {
         //given
@@ -57,6 +58,7 @@ public class ImageControllerTest {
 
     }
 
+    @Ignore
     @Test
     public void handleImagePost() throws Exception {
         MockMultipartFile multipartFile =
