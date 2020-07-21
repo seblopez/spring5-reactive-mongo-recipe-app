@@ -2,7 +2,6 @@ package guru.springframework.controllers;
 
 import guru.springframework.domain.Notes;
 import guru.springframework.domain.Recipe;
-import guru.springframework.exceptions.NotFoundException;
 import guru.springframework.services.RecipeService;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -71,12 +70,12 @@ public class RecipeControllerTest {
 
     @Test
     public void testGetRecipeNotFound() throws Exception {
-        when(recipeService.findById(anyString())).thenThrow(NotFoundException.class);
+        when(recipeService.findById(anyString())).thenThrow(IllegalArgumentException.class);
 
         webTestClient.get()
                 .uri("/recipe/1/show")
                 .exchange()
-                .expectStatus().isNotFound();
+                .expectStatus().is5xxServerError();
     }
 
     @Ignore
